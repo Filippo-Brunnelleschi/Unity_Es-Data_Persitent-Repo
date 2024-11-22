@@ -11,14 +11,23 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text bestScoreText;
     public GameObject GameOverText;
-    
+    public GameController gameControllerScript;
+
+
+
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
+    private bool once = false;
+    
 
     
+
+   
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,13 +60,26 @@ public class MainManager : MonoBehaviour
 
                 Ball.transform.SetParent(null);
                 Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
+
+
+                Debug.Log(gameControllerScript.sceneCount);
+
+                if (gameControllerScript.sceneCount==1)
+                {
+                    Debug.Log("Noice");
+                    gameControllerScript.Load();
+                    bestScoreText.text = "Score: " + gameControllerScript.MaxScore + "Name: " + gameControllerScript.playerName;
+
+
+                    gameControllerScript.sceneCount = 0;
+                }
             }
         }
         else if (m_GameOver)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);               
             }
         }
     }
@@ -71,6 +93,14 @@ public class MainManager : MonoBehaviour
     public void GameOver()
     {
         m_GameOver = true;
+
+        gameControllerScript.Save(m_Points);
+        //gameControllerScript.BestScore();
+
+
+
         GameOverText.SetActive(true);
     }
+
+ 
 }
